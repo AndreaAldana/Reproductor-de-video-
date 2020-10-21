@@ -2,14 +2,15 @@
 // Creamos una función llamada mediaPlayer que nos servirá como prototipo.
 
 class MediaPlayer {
+    media: HTMLMediaElement;
+    plugins: Array<any>
     constructor(config) {
         this.media = config.el;
         this.plugins = config.plugins || [];
-
-        this._initPlugins();
+        this.initPlugins();
     }
     //this indica llamar a mediaplayer
-    _initPlugins() {
+    private initPlugins() {
         this.plugins.forEach(plugin => {
             plugin.run(this);
         });
