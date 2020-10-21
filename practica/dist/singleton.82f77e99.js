@@ -117,81 +117,50 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"ejercicios/typescript/index.ts":[function(require,module,exports) {
-console.log("Hello Typescript"); //Boolean
+})({"ejercicios/singleton/Singleton.ts":[function(require,module,exports) {
+"use strict";
 
-var muted = true; //números
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var numerador = 42;
-var denominador = 6;
-var resultado = numerador / denominador; //Arreglos
+var Singleton =
+/** @class */
+function () {
+  function Singleton() {}
 
-var people = [];
-people = ['Isabel', 'Nicole', 'Juan']; //Arreglo de string y numeros
+  Singleton.getInstance = function () {
+    //Si no existe, se crea y se regresa
+    if (!Singleton.instance) {
+      Singleton.instance = new Singleton();
+    }
 
-var peopleAndNumbers = [];
-peopleAndNumbers.push('Ricardo');
-peopleAndNumbers.push(1); //Enum
-
-var Color;
-
-(function (Color) {
-  Color["Rojo"] = "Rojo";
-  Color["Verde"] = "Verde";
-  Color["Azul"] = "Azul";
-})(Color || (Color = {})); //Asignar valor de objeto a variable
-
-
-var colorFav = Color.Rojo;
-console.log(colorFav); //Any
-
-var comodin = "Joker";
-comodin = {
-  type: "wild"
-}; //Object
-
-var someObj = {
-  type: 'wild'
-}; //funciones
-
-function add(a, b) {
-  return a + b;
-}
-
-var sum = add(2, 6); //funciones que regresan funciones
-
-function createAdder(a) {
-  return function (b) {
-    return b + a;
+    return Singleton.instance;
   };
-}
 
-var addFour = createAdder(5);
-var fourPlus6 = addFour(6); //EL ? hace que el argumento sea undefined, o sea, puede omitirse
+  return Singleton;
+}();
 
-function fullName(firstName, lastName) {
-  return firstName + " " + lastName;
-}
+exports.default = Singleton;
+},{}],"ejercicios/singleton/index.ts":[function(require,module,exports) {
+"use strict";
 
-var richard = fullName('Richard');
-var rect = {
-  ancho: 4,
-  alto: 6
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
 };
 
-function area(r) {
-  return r.alto * r.ancho;
-}
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var areaR = area(rect);
-console.log(areaR);
+var Singleton_1 = __importDefault(require("./Singleton"));
 
-rect.toString = function () {
-  return this.color ? "Un rect\u00E1gulo " + this.color : "No existe";
-};
-
-console.log(rect.toString());
-},{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var a = Singleton_1.default.getInstance();
+var b = Singleton_1.default.getInstance();
+console.log("A es igual a B?", a == b);
+},{"./Singleton":"ejercicios/singleton/Singleton.ts"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -395,5 +364,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","ejercicios/typescript/index.ts"], null)
-//# sourceMappingURL=/typescript.72c601f0.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","ejercicios/singleton/index.ts"], null)
+//# sourceMappingURL=/singleton.82f77e99.js.map
