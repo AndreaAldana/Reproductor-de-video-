@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <ul>
+        <li><button class="call-to-action">Aprender</button></li>
+        <li><button class="call-to-action">Aprender más</button></li>
+        <li><button class="call-to-action">¡Nunca parar de aprender!</button></li>
+    </ul>
+
+    <script>
+
+
+        /* Establece this usando call */
+        function saludar() {
+            console.log(`Hola, soy ${this.name} ${this.apellido}`)
+        }
+
+        const richard = {
+            name: "Richard",
+            apellido: "Aldana"
+        }
+
+        saludar.call(richard)
+
+        function caminar(metros, direccion) {
+            console.log(`${this.name} camina ${metros} metros hacia ${direccion}`)
+        }
+        caminar.call(richard, 400, "norte")
+
+        //Apply es como call pero los argumentos se pasan diferente, con un arreglo
+        caminar.apply(richard, ["800", "noreste"]);
+        // o de esta manera como se haría propiamente
+        const valores = [800, 'noreste'];
+        caminar.apply(richard, valores)
+
+        /*   Call - comma
+          Apply - Arreglo */
+
+        //Establecer this en una nueva función usando bind. Bind construye una nueva función. No
+        //Llama una función directamente cpmo las anteriores.
+        const daniel = { name: "Daniel", apellido: "Sánchez" }
+        const danielSaluda = saludar.bind(daniel)
+        danielSaluda();
+
+        //Bind con una función que recibe otros parámetros, primero de bindeay luego
+        //se llama la función y se le añaden los parámetros en los paréntesis
+        const danielCamina = caminar.bind(daniel)
+        danielCamina(1000, "este");
+
+        //También se pueden llamar directamente en una función creada
+        // como const danielCamina = caminar.bind(daniel, 100, "sur")
+
+        /*    también se puede hacer CURRYING que es guardar valores parciales 
+           en una función; ej: en este caso 200 estará guardado y solo la dirección varía*/
+        const andrea = { name: "Andrea", apellido: "Aldana" }
+        const andreaCamina = caminar.bind(andrea, "200")
+        andreaCamina("sureste");
+
+        //Ejercicios con los botones aplicando lo visto 
+        const buttons = document.getElementsByClassName("call-to-action");
+        /*   buttons.forEach(button => {
+              button.onclick = () => alert("nunca pares de aprender")
+          }) */
+
+        Array.prototype.forEach.call(buttons, button => {
+            button.onclick = () => alert("nunca pares de aprender")
+        })
+
+    </script>
+</body>
+
+</html>

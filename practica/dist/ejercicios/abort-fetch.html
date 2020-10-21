@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <img id="huge-image" height="400">
+
+    <button id="load">LOAD</button>
+    <button id="stop" disabled="">STOP</button>
+
+    <script>const url = 'https://upload.wikimedia.org/wikipedia/commons/4/41/Wac_nearside_3000.jpg';
+const img = document.getElementById('huge-image');
+const loadButton = document.getElementById('load');
+const stopButton = document.getElementById('stop');
+let controller;
+
+function startLoading() {
+  loadButton.disabled = true;
+  loadButton.innerText = 'Loading...';
+  stopButton.disabled = false;
+}
+
+function stopLoading() {
+  loadButton.disabled = false;
+  loadButton.innerText = 'Load HUGE image';
+  stopButton.disabled = true;
+}
+
+loadButton.onclick = async function () {
+  try {
+    startLoading(); //Permite detener una ejecución, en este caso es la del fetch 
+
+    controller = new AbortController(); //Le pasamos la señal al fetch
+
+    const response = await fetch(url, {
+      signal: controller.signal
+    }); //blob es binario. Traerá la imagen binaria
+
+    const blob = await response.blob(); //Aqui se pasa el blob para que el navegador lo convierta en url
+
+    const imgUrl = URL.createObjectURL(blob);
+    img.src = imgUrl;
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  stopLoading();
+};
+
+stopButton.onclick = function () {
+  controller.abort();
+  stopLoading();
+};</script>
+</body>
+
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype</title>
+</head>
+
+<body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <script>
+        //objeto común y corriente
+
+        /* const zelda = { name: "Zelda" }
+        zelda.saludar = function () {
+            console.log(`Hola soy ${this.name}`)
+        }
+        zelda.saludar(); */
+
+        //Ser eficientes
+
+        function Hero(name) {
+            const hero = { name: name }
+
+
+            hero.saludar = function () {
+                console.log(`Hola, soy ${this.name}`)
+            }
+            return hero;
+        }
+
+
+        //creando la función afuera de la clase para no llamarlo cada vez
+        /*  const heroMethods = {
+             saludar: function () {
+                 console.log(`Hola, me llamo ${this.name}`)
+             }
+         } */
+
+
+        //Object.create
+        /* const nuevoObjeto = Object.create(objeto) */
+
+        //Aquí, al pasarle heroMethods, se le van a pasar al nuevo hero
+        /* function Hero(name) {
+            const hero = Object.create(heroMethods)
+            hero.name = name;
+
+            return hero;
+        }
+
+        const zelda = Hero("Zelda")
+        zelda.saludar();
+
+        const link = Hero("Link")
+        link.saludar();
+
+        const pan = Hero("pan");
+        pan.saludar();
+ */
+
+        //Los métodos de hero dentro de un Hero
+
+        /* const heroMethods = {
+                   saludar: function () {
+                       console.log(`Hola, me llamo ${this.name}`)
+                   }
+               } */
+
+        /* function Hero(name) {
+            const hero = Object.create(Hero.prototype)
+            hero.name = name;
+
+            return hero;
+        }
+
+        Hero.prototype.saludar = function () {
+            console.log(`Soy superheroe, ${this.name}`)
+        }
+
+        const zelda = Hero("Zelda")
+        zelda.saludar();
+
+        const link = Hero("Link")
+        link.saludar();
+
+        const pan = Hero("pan");
+        pan.saludar(); */
+
+
+
+        //Mejorar el codigo anterior usando New
+
+        function Hero(name) {
+            // const hero = Object.create(Hero.prototype)
+            this.name = name;
+            // return hero;
+        }
+
+        Hero.prototype.saludar = function () {
+            console.log(`New: ${this.name}`)
+        }
+
+        const zelda = new Hero("Zelda")
+        zelda.saludar();
+
+        const link = new Hero("Link")
+        link.saludar();
+
+        const pan = new Hero("Pan")
+        pan.saludar();
+
+
+        //Practicando new
+
+        function Pokemon(nombre, tipo, ataque) {
+            this.nombre = nombre;
+            this.tipo = tipo;
+            this.ataque = ataque;
+        }
+
+        Pokemon.prototype.presentar = function () {
+            console.log(`Hola, mi Pokemon se llama: ${this.nombre}`)
+        }
+
+        Pokemon.prototype.mostrarTipo = function () {
+            console.log(`${this.nombre} es de tipo: ${this.tipo}`)
+        }
+
+        Pokemon.prototype.atacar = function () {
+            console.log(`${this.nombre} ha utilizado ${this.ataque}`)
+        }
+
+        const pikachu = new Pokemon("Pikachu", "Eléctrico", "Impactrueno")
+
+        pikachu.presentar();
+        pikachu.mostrarTipo();
+        pikachu.atacar();
+    </script>
+</body>
+
+</html>

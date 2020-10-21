@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scope</title>
+</head>
+
+<body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+
+    <script>/*     El scope define el tiempo de vida de una variable */
+// global scope (Variable general,afuera de bloques y funciones)
+var message = "Hello"; // function scope
+
+function printNumbers() {
+  var i;
+
+  for (i = 0; i < 10; i++) {
+    function eventuallyPrintNumbers(n) {
+      setTimeout(() => {
+        console.log(n);
+      }, 100);
+    }
+
+    eventuallyPrintNumbers(i);
+  }
+}
+
+printNumbers(); //block scope, que es dentro de una iteración, no en función general
+
+function printNumbers2() {
+  for (let i = 0; i < 10; i++) {
+    function eventuallyPrintNumbers(n) {
+      setTimeout(() => {
+        console.log(n);
+      }, 100);
+    }
+
+    eventuallyPrintNumbers(i);
+  }
+}
+
+printNumbers2(); // module scope. Limita el alcance de los elementos dentro de su mismo archivo</script>
+</body>
+
+</html>

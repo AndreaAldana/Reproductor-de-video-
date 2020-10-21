@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closures</title>
+</head>
+
+<body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <script>//IIFE es una función que se llama inmediatamente
+(function () {
+  let color = 'green';
+
+  function printColor() {
+    console.log(color);
+  }
+
+  printColor();
+})(); //Funciones que retornan funciones, closure es acceder a una variable dentro 
+//de una función, son variables privadas a las que las funciones dentro acceden.
+
+
+function makeColorPrinter(color) {
+  let colorMessage = `The color is ${color}`;
+  return function () {
+    console.log(colorMessage);
+  };
+}
+
+let greenColorPrinter = makeColorPrinter("blue"); //Si se imprime así, muestra el mensaje en consola
+
+console.log(greenColorPrinter()); //Si se imprime asi, en la consola retorna literalmente el codigo de la función
+
+/* console.log(greenColorPrinter) */
+//los closure permiten tener variables privadas. Permite el encapsulamiento.
+
+function makeCounter(n) {
+  let count = n;
+  return {
+    increase: function () {
+      count = count + 1;
+    },
+    decrease: function () {
+      count = count - 1;
+    },
+    getCount: function () {
+      return count;
+    }
+  };
+}
+
+let counter = makeCounter(7);
+console.log("The count is: " + counter.getCount());
+counter.increase();
+console.log("The count is: " + counter.getCount());
+counter.decrease();
+counter.decrease();
+counter.decrease();
+console.log("The count is: " + counter.getCount());</script>
+
+</body>
+
+</html>
