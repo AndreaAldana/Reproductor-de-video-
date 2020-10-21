@@ -62,3 +62,29 @@ function fullName(firstName: string, lastName?: string): string {
 
 const richard = fullName('Richard')
 
+//Creando interface
+
+//EL ? volverá esa propiedad opcional por lo que rect puede omitirlo
+interface Rectangulo {
+    ancho: number;
+    alto: number;
+    color?: Color
+}
+
+let rect: Rectangulo = {
+    ancho: 4,
+    alto: 6
+}
+
+function area(r: Rectangulo) {
+    return r.alto * r.ancho;
+}
+
+const areaR = area(rect)
+console.log(areaR)
+
+rect.toString = function () {
+    return this.color ? `Un rectágulo ${this.color}` : "No existe"
+}
+
+console.log(rect.toString())

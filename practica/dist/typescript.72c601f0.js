@@ -174,6 +174,23 @@ function fullName(firstName, lastName) {
 }
 
 var richard = fullName('Richard');
+var rect = {
+  ancho: 4,
+  alto: 6
+};
+
+function area(r) {
+  return r.alto * r.ancho;
+}
+
+var areaR = area(rect);
+console.log(areaR);
+
+rect.toString = function () {
+  return this.color ? "Un rect\u00E1gulo " + this.color : "No existe";
+};
+
+console.log(rect.toString());
 },{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
