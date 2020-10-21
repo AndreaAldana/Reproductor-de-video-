@@ -35,3 +35,30 @@ comodin = { type: "wild" }
 
 //Object
 let someObj: object = { type: 'wild' }
+
+
+//funciones
+function add(a: number, b: number): number {
+    return a + b
+}
+
+const sum = add(2, 6)
+
+//funciones que regresan funciones
+
+function createAdder(a: number): (number) => number {
+    return function (b: number) {
+        return b + a;
+    }
+}
+
+const addFour = createAdder(5)
+const fourPlus6 = addFour(6)
+
+//EL ? hace que el argumento sea undefined, o sea, puede omitirse
+function fullName(firstName: string, lastName?: string): string {
+    return `${firstName} ${lastName}`
+}
+
+const richard = fullName('Richard')
+

@@ -152,7 +152,28 @@ comodin = {
 
 var someObj = {
   type: 'wild'
-};
+}; //funciones
+
+function add(a, b) {
+  return a + b;
+}
+
+var sum = add(2, 6); //funciones que regresan funciones
+
+function createAdder(a) {
+  return function (b) {
+    return b + a;
+  };
+}
+
+var addFour = createAdder(5);
+var fourPlus6 = addFour(6); //EL ? hace que el argumento sea undefined, o sea, puede omitirse
+
+function fullName(firstName, lastName) {
+  return firstName + " " + lastName;
+}
+
+var richard = fullName('Richard');
 },{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
