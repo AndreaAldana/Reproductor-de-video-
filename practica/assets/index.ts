@@ -1,11 +1,11 @@
-import MediaPlayer from './MediaPlayer.js'
-import AutoPlay from './plugins/AutoPlay.js'
-import AutoPause from './plugins/AutoPause.ts'
+import MediaPlayer from './MediaPlayer'
+import AutoPlay from './plugins/AutoPlay'
+import AutoPause from './plugins/AutoPause'
 
 //Aquí, se debe importar el archivo media player para que funcione
 const video = document.querySelector("video");
-const button = document.querySelector("button");
-const unmuteMute = document.querySelector('#unmuteMute')
+const button: HTMLElement = document.querySelector("button");
+const unmuteMute: HTMLElement = document.querySelector('#unmuteMute')
 
 const player = new MediaPlayer({
   el: video, plugins: [

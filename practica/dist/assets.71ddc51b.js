@@ -117,79 +117,203 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
+})({"assets/MediaPlayer.ts":[function(require,module,exports) {
+"use strict"; // Creamos una función llamada mediaPlayer que nos servirá como prototipo.
 
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
-  }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-  return bundleURL;
-}
+var MediaPlayer =
+/** @class */
+function () {
+  function MediaPlayer(config) {
+    this.media = config.el;
+    this.plugins = config.plugins || [];
+    this.initPlugins();
+  } //this indica llamar a mediaplayer
 
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
 
-    if (matches) {
-      return getBaseURL(matches[0]);
-    }
-  }
+  MediaPlayer.prototype.initPlugins = function () {
+    var _this = this;
 
-  return '/';
-}
+    this.plugins.forEach(function (plugin) {
+      plugin.run(_this);
+    });
+  };
+  /*  A mediaPlayer le asignamos una función llamada play usando prototype.
+   Esta función le dará inicio al video. */
+  //Si está pausado, puede darse play, si está en play, puede pausarse con click.
 
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
 
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
-
-function updateLink(link) {
-  var newLink = link.cloneNode();
-
-  newLink.onload = function () {
-    link.remove();
+  MediaPlayer.prototype.play = function () {
+    this.media.play();
   };
 
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
+  MediaPlayer.prototype.pause = function () {
+    this.media.pause();
+  };
 
-var cssTimeout = null;
+  MediaPlayer.prototype.togglePlay = function () {
+    if (this.media.paused) {
+      this.play();
+    } else {
+      this.pause();
+    }
+  };
 
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
+  MediaPlayer.prototype.mute = function () {
+    this.media.muted = true;
+  };
 
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
+  MediaPlayer.prototype.unmute = function () {
+    this.media.muted = false;
+  };
 
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
-      }
+  MediaPlayer.prototype.unmuteMute = function () {
+    if (this.media.muted == true) {
+      this.unmute();
+    } else {
+      this.mute();
+    }
+  };
+
+  return MediaPlayer;
+}();
+/*    Luego con el botón se acciona una función llamada player que es una instancia del prototipo mediaPlayer que creamos.
+La instancia se crea usando la palabra new. */
+
+
+exports.default = MediaPlayer; //Se debe exportar para poder usarse
+},{}],"assets/plugins/AutoPlay.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var AutoPlay =
+/** @class */
+function () {
+  function AutoPlay() {}
+
+  AutoPlay.prototype.run = function (player) {
+    if (!player.media.muted) {
+      player.media.muted = true;
     }
 
-    cssTimeout = null;
-  }, 50);
+    player.play();
+  };
+
+  return AutoPlay;
+}();
+
+exports.default = AutoPlay;
+},{}],"assets/plugins/AutoPause.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var AutoPause =
+/** @class */
+function () {
+  function AutoPause() {
+    this.threshold = 0.25;
+    this.handleIntersection = this.handleIntersection.bind(this);
+    this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+  }
+
+  AutoPause.prototype.run = function (player) {
+    //Llamamos a la instancia de la clase
+    this.player = player; //Creamos el intersection observer
+    //Primero recibe un handler y el segundo es ub objeto de configuración
+
+    var observer = new IntersectionObserver(this.handleIntersection, {
+      //Esto define qué percibirá del elemento, en este caso, 25% de elemento que sobre
+      threshold: this.threshold
+    }); //Lo que va a observar, que en este caso es el video
+
+    observer.observe(this.player.media); //Este evento detiene algo si no está siendo visto, en este caso
+    //si sales de la pestaña del video, el se detendrá
+    //Esto es muy util para también detener info o carruseles que el usuario no esté viendo
+    //o incluso desactivar sonidos si se apaga la pantalla en descanso
+
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+  }; //Aquí hay que pasar una lista de entries, son todos los objetos que se están observando
+
+
+  AutoPause.prototype.handleIntersection = function (entries) {
+    //Le indicamos que es un solo elemento de la lista
+    var entry = entries[0];
+    var isVisible = entry.intersectionRatio >= this.threshold;
+
+    if (isVisible) {
+      this.player.play();
+    } else {
+      this.player.pause();
+    }
+  }; //Aquí la función que recibe, el cual es un boolean en el que si es true hace algo, y si es false,
+  //la idea es detenerlo, visibility sabrá cuando detenerlo
+
+
+  AutoPause.prototype.handleVisibilityChange = function () {
+    var isVisible = document.visibilityState == "visible";
+
+    if (isVisible) {
+      this.player.play();
+    } else {
+      this.player.pause();
+    }
+  };
+
+  return AutoPause;
+}();
+
+exports.default = AutoPause;
+},{}],"assets/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var MediaPlayer_1 = __importDefault(require("./MediaPlayer"));
+
+var AutoPlay_1 = __importDefault(require("./plugins/AutoPlay"));
+
+var AutoPause_1 = __importDefault(require("./plugins/AutoPause")); //Aquí, se debe importar el archivo media player para que funcione
+
+
+var video = document.querySelector("video");
+var button = document.querySelector("button");
+var unmuteMute = document.querySelector('#unmuteMute');
+var player = new MediaPlayer_1.default({
+  el: video,
+  plugins: [new AutoPlay_1.default(), new AutoPause_1.default()]
+});
+
+button.onclick = function () {
+  return player.togglePlay();
+};
+
+unmuteMute.onclick = function () {
+  return player.unmuteMute();
+};
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register("/sw.js").catch(function (error) {
+    console.log(error.message);
+  });
 }
-
-module.exports = reloadCSS;
-},{"./bundle-url":"node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"assets/index.css":[function(require,module,exports) {
-var reloadCSS = require('_css_loader');
-
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./MediaPlayer":"assets/MediaPlayer.ts","./plugins/AutoPlay":"assets/plugins/AutoPlay.ts","./plugins/AutoPause":"assets/plugins/AutoPause.ts","C:\\Users\\Administrator\\Desktop\\practica de js a ts\\practica\\sw.js":[["sw.js","sw.js"],"sw.js.map","sw.js"]}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -393,5 +517,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/assets.2f291257.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","assets/index.ts"], null)
+//# sourceMappingURL=/assets.71ddc51b.js.map
