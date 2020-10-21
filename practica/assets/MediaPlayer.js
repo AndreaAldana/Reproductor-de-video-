@@ -10,19 +10,6 @@ class MediaPlayer {
     }
     //this indica llamar a mediaplayer
     _initPlugins() {
-        const player = {
-            play: () => this.play(),
-            pause: () => this.pause(),
-            media: this.video,
-            get muted() {
-                return this.media.muted;
-            },
-            set muted(value) {
-                if (value == true) {
-                    this.media.muted = value;
-                }
-            }
-        };
         this.plugins.forEach(plugin => {
             plugin.run(this);
         });
