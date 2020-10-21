@@ -117,80 +117,67 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"ejercicios/typescript/index.ts":[function(require,module,exports) {
-console.log("Hello Typescript"); //Boolean
-
-var muted = true; //números
-
-var numerador = 42;
-var denominador = 6;
-var resultado = numerador / denominador; //Arreglos
-
-var people = [];
-people = ['Isabel', 'Nicole', 'Juan']; //Arreglo de string y numeros
-
-var peopleAndNumbers = [];
-peopleAndNumbers.push('Ricardo');
-peopleAndNumbers.push(1); //Enum
-
-var Color;
-
-(function (Color) {
-  Color["Rojo"] = "Rojo";
-  Color["Verde"] = "Verde";
-  Color["Azul"] = "Azul";
-})(Color || (Color = {})); //Asignar valor de objeto a variable
+})({"ejercicios/observer/index.ts":[function(require,module,exports) {
+//Primero definimos unas interfaces
+var BitcoinPrice =
+/** @class */
+function () {
+  function BitcoinPrice() {
+    var _this = this; //Se define la lista
 
 
-var colorFav = Color.Rojo;
-console.log(colorFav); //Any
+    this.observers = [];
+    var el = document.querySelector("#value");
+    el.addEventListener('input', function () {
+      //El notificará cuando el valor cambie
+      _this.notify(el.value);
+    });
+  } //se añade a una lista de observadores
 
-var comodin = "Joker";
-comodin = {
-  type: "wild"
-}; //Object
 
-var someObj = {
-  type: 'wild'
-}; //funciones
-
-function add(a, b) {
-  return a + b;
-}
-
-var sum = add(2, 6); //funciones que regresan funciones
-
-function createAdder(a) {
-  return function (b) {
-    return b + a;
+  BitcoinPrice.prototype.subscribe = function (observer) {
+    this.observers.push(observer);
   };
-}
 
-var addFour = createAdder(5);
-var fourPlus6 = addFour(6); //EL ? hace que el argumento sea undefined, o sea, puede omitirse
+  BitcoinPrice.prototype.unsubscribe = function (observer) {
+    //para sacarlo debemos saber en que indice se encuentra
+    var index = this.observers.findIndex(function (obs) {
+      return obs == observer;
+    }); //de ese indice solo queremos sacar 1 elemento
 
-function fullName(firstName, lastName) {
-  return firstName + " " + lastName;
-}
+    this.observers.splice(index, 1);
+  }; //Esto notificará a los subscriptores
 
-var richard = fullName('Richard');
-var rect = {
-  ancho: 4,
-  alto: 6
-};
 
-function area(r) {
-  return r.alto * r.ancho;
-}
+  BitcoinPrice.prototype.notify = function (data) {
+    this.observers.forEach(function (observer) {
+      return observer.update(data);
+    });
+  };
 
-var areaR = area(rect);
-console.log(areaR);
+  return BitcoinPrice;
+}();
 
-rect.toString = function () {
-  return this.color ? "Un rect\u00E1gulo " + this.color : "No existe";
-};
+var PriceDisplay =
+/** @class */
+function () {
+  function PriceDisplay() {
+    this.el = document.querySelector("#price");
+  }
 
-console.log(rect.toString());
+  PriceDisplay.prototype.update = function (data) {
+    this.el.innerText = data;
+  };
+
+  return PriceDisplay;
+}();
+
+var value = new BitcoinPrice();
+var display = new PriceDisplay();
+value.subscribe(display);
+setTimeout(function () {
+  return value.unsubscribe(display);
+}, 5000);
 },{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -395,5 +382,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","ejercicios/typescript/index.ts"], null)
-//# sourceMappingURL=/typescript.72c601f0.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","ejercicios/observer/index.ts"], null)
+//# sourceMappingURL=/observer.34a0b697.js.map
