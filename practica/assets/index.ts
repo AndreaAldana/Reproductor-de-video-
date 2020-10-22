@@ -1,6 +1,7 @@
 import MediaPlayer from './MediaPlayer'
 import AutoPlay from './plugins/AutoPlay'
 import AutoPause from './plugins/AutoPause'
+import Ads from '../assets/plugins/Ads/Ads'
 
 //Aquí, se debe importar el archivo media player para que funcione
 const video = document.querySelector("video");
@@ -9,7 +10,7 @@ const unmuteMute: HTMLElement = document.querySelector('#unmuteMute')
 
 const player = new MediaPlayer({
   el: video, plugins: [
-    new AutoPlay(), new AutoPause()]
+    new AutoPlay(), new AutoPause(), new Ads()]
 });
 
 button.onclick = () => player.togglePlay();
