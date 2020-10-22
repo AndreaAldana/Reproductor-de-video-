@@ -130,8 +130,18 @@ function () {
   function MediaPlayer(config) {
     this.media = config.el;
     this.plugins = config.plugins || [];
+    this.initPlayer();
     this.initPlugins();
-  } //this indica llamar a mediaplayer
+  }
+
+  MediaPlayer.prototype.initPlayer = function () {
+    this.container = document.createElement('div');
+    this.container.style.position = 'relative'; //Contenedor al lado de media
+
+    this.media.parentNode.insertBefore(this.container, this.media); //Media adentro de contenedor, ya que se vuelve hijob
+
+    this.container.appendChild(this.media);
+  }; //this indica llamar a mediaplayer
 
 
   MediaPlayer.prototype.initPlugins = function () {
@@ -331,14 +341,12 @@ var ALL_ADS = [{
 var Ads =
 /** @class */
 function () {
-  function Ads() {}
-
-  Ads.prototype.constuctor = function () {
+  function Ads() {
     this.initAds();
-  };
+  }
 
   Ads.getInstance = function () {
-    if (Ads.instance) {
+    if (!Ads.instance) {
       Ads.instance = new Ads();
     }
 
@@ -352,7 +360,7 @@ function () {
 
   Ads.prototype.getAd = function () {
     //Si el arreglo se acaba y no hay más elementos que sacar, se reinicia el arreglo
-    if (this.ads.length == 0) {
+    if (this.ads.length === 0) {
       this.initAds();
     } // pop sacará del arreglo un valor y lo regresará
 
@@ -364,7 +372,70 @@ function () {
 }();
 
 exports.default = Ads;
-},{}],"assets/index.ts":[function(require,module,exports) {
+},{}],"assets/plugins/Ads/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Ads_1 = __importDefault(require("./Ads")); //todos los plugin tienen el metodo publico run así que lo llamamos e importamos
+
+
+var AdsPlugin =
+/** @class */
+function () {
+  function AdsPlugin() {
+    this.ads = Ads_1.default.getInstance();
+    this.adsContainer = document.createElement('div');
+    this.handleTimeUpdate = this.handleTimeUpdate.bind(this);
+  }
+
+  AdsPlugin.prototype.run = function (player) {
+    this.player = player;
+    this.media = this.player.media;
+    this.player.container.appendChild(this.adsContainer); //timeupdate anuncia el cambio del tiempo y permite realizar acciones en dicho tiempo determinado
+
+    this.media.addEventListener('timeupdate', this.handleTimeUpdate);
+  };
+
+  AdsPlugin.prototype.handleTimeUpdate = function () {
+    //math.floor regresa un valor entero
+    var currentTime = Math.floor(this.media.currentTime); // Cada 30 seg desplega un ad
+
+    if (currentTime % 30 == 0) {
+      this.renderAd();
+    }
+  }; //Esta función llama al get
+
+
+  AdsPlugin.prototype.renderAd = function () {
+    var _this = this;
+
+    if (this.currentAd) {
+      return;
+    }
+
+    var ad = this.ads.getAd();
+    this.currentAd = ad;
+    this.adsContainer.innerHTML = "\n          <div class=\"ads\">\n            <a class=\"ads__link\" href=\"" + this.currentAd.url + "\" target=\"_blank\">\n              <img class=\"ads__img\" src=\"" + this.currentAd.imageUrl + "\" />\n              <div class=\"ads__info\">\n                <h5 class=\"ads__title\">" + this.currentAd.title + "</h5>\n                <p class=\"ads__body\">" + this.currentAd.body + "</p>\n              </div>\n            </a>\n          </div>\n        ";
+    setTimeout(function () {
+      _this.currentAd = null;
+      _this.adsContainer.innerHTML = '';
+    }, 10000);
+  };
+
+  return AdsPlugin;
+}();
+
+exports.default = AdsPlugin;
+},{"./Ads":"assets/plugins/Ads/Ads.ts"}],"assets/index.ts":[function(require,module,exports) {
 "use strict";
 
 var __importDefault = this && this.__importDefault || function (mod) {
@@ -383,7 +454,7 @@ var AutoPlay_1 = __importDefault(require("./plugins/AutoPlay"));
 
 var AutoPause_1 = __importDefault(require("./plugins/AutoPause"));
 
-var Ads_1 = __importDefault(require("../assets/plugins/Ads/Ads")); //Aquí, se debe importar el archivo media player para que funcione
+var Ads_1 = __importDefault(require("../assets/plugins/Ads")); //Aquí, se debe importar el archivo media player para que funcione
 
 
 var video = document.querySelector("video");
@@ -407,7 +478,7 @@ if ('serviceWorker' in navigator) {
     console.log(error.message);
   });
 }
-},{"./MediaPlayer":"assets/MediaPlayer.ts","./plugins/AutoPlay":"assets/plugins/AutoPlay.ts","./plugins/AutoPause":"assets/plugins/AutoPause.ts","../assets/plugins/Ads/Ads":"assets/plugins/Ads/Ads.ts","C:\\Users\\Administrator\\Desktop\\practica de js a ts\\practica\\sw.js":[["sw.js","sw.js"],"sw.js.map","sw.js"]}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./MediaPlayer":"assets/MediaPlayer.ts","./plugins/AutoPlay":"assets/plugins/AutoPlay.ts","./plugins/AutoPause":"assets/plugins/AutoPause.ts","../assets/plugins/Ads":"assets/plugins/Ads/index.ts","C:\\Users\\Administrator\\Desktop\\practica de js a ts\\practica\\sw.js":[["sw.js","sw.js"],"sw.js.map","sw.js"]}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

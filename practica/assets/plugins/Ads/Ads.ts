@@ -59,12 +59,12 @@ const ALL_ADS: Ad[] = [
 class Ads {
     private static instance: Ads;
     private ads: Ad[]
-    private constuctor() {
+    private constructor() {
         this.initAds()
     }
 
     static getInstance() {
-        if (Ads.instance) {
+        if (!Ads.instance) {
             Ads.instance = new Ads();
         }
 
@@ -76,10 +76,11 @@ class Ads {
         this.ads = [...ALL_ADS]
 
     }
+
     getAd() {
 
         //Si el arreglo se acaba y no hay más elementos que sacar, se reinicia el arreglo
-        if (this.ads.length == 0) {
+        if (this.ads.length === 0) {
             this.initAds()
         }
         // pop sacará del arreglo un valor y lo regresará

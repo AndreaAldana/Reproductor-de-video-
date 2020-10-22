@@ -1,7 +1,7 @@
 import MediaPlayer from './MediaPlayer'
 import AutoPlay from './plugins/AutoPlay'
 import AutoPause from './plugins/AutoPause'
-import Ads from '../assets/plugins/Ads/Ads'
+import Ads from '../assets/plugins/Ads'
 
 //Aquí, se debe importar el archivo media player para que funcione
 const video = document.querySelector("video");

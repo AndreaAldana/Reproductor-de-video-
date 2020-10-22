@@ -4,11 +4,23 @@
 class MediaPlayer {
     media: HTMLMediaElement;
     plugins: Array<any>
+    container: HTMLElement;
     constructor(config) {
         this.media = config.el;
         this.plugins = config.plugins || [];
+        this.initPlayer();
         this.initPlugins();
     }
+
+    initPlayer() {
+        this.container = document.createElement('div');
+        this.container.style.position = 'relative'
+        //Contenedor al lado de media
+        this.media.parentNode.insertBefore(this.container, this.media)
+        //Media adentro de contenedor, ya que se vuelve hijob
+        this.container.appendChild(this.media)
+    }
+
     //this indica llamar a mediaplayer
     private initPlugins() {
         this.plugins.forEach(plugin => {
