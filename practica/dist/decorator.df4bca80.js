@@ -117,80 +117,67 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"ejercicios/typescript/index.ts":[function(require,module,exports) {
-console.log("Hello Typescript"); //Boolean
+})({"ejercicios/decorator/index.ts":[function(require,module,exports) {
+var Field =
+/** @class */
+function () {
+  function Field(input) {
+    var _this = this;
 
-var muted = true; //números
+    this.input = input;
+    this.errors = [];
+    var errorMessage = document.createElement('p');
+    errorMessage.className = 'text-danger'; //Esto es para insertar el p 
 
-var numerador = 42;
-var denominador = 6;
-var resultado = numerador / denominador; //Arreglos
+    this.input.parentNode.insertBefore(errorMessage, this.input.nextSibling); //La validacion solo ocurre al cambiar el valor del campo
 
-var people = [];
-people = ['Isabel', 'Nicole', 'Juan']; //Arreglo de string y numeros
+    this.input.addEventListener('input', function () {
+      _this.errors = []; //Valida y pusea si hay error
 
-var peopleAndNumbers = [];
-peopleAndNumbers.push('Ricardo');
-peopleAndNumbers.push(1); //Enum
+      _this.validate();
 
-var Color;
+      errorMessage.innerText = _this.errors[0] || '';
+    });
+  }
 
-(function (Color) {
-  Color["Rojo"] = "Rojo";
-  Color["Verde"] = "Verde";
-  Color["Azul"] = "Azul";
-})(Color || (Color = {})); //Asignar valor de objeto a variable
+  Field.prototype.validate = function () {};
 
+  return Field;
+}();
 
-var colorFav = Color.Rojo;
-console.log(colorFav); //Any
+function RequiredFieldDecorator(field) {
+  var validate = field.validate;
 
-var comodin = "Joker";
-comodin = {
-  type: "wild"
-}; //Object
+  field.validate = function () {
+    validate();
+    var value = field.input.value;
 
-var someObj = {
-  type: 'wild'
-}; //funciones
-
-function add(a, b) {
-  return a + b;
-}
-
-var sum = add(2, 6); //funciones que regresan funciones
-
-function createAdder(a) {
-  return function (b) {
-    return b + a;
+    if (!value) {
+      field.errors.push("Requerido");
+    }
   };
+
+  return field;
 }
 
-var addFour = createAdder(5);
-var fourPlus6 = addFour(6); //EL ? hace que el argumento sea undefined, o sea, puede omitirse
+function EmailFieldDecorator(field) {
+  var validate = field.validate;
 
-function fullName(firstName, lastName) {
-  return firstName + " " + lastName;
+  field.validate = function () {
+    validate();
+    var value = field.input.value; //el guion significa que el value no sea -1, esto quiere decir, que no exista
+
+    if (!~value.indexOf('@')) {
+      field.errors.push("Debe ser un email");
+    }
+  };
+
+  return field;
 }
 
-var richard = fullName('Richard');
-var rect = {
-  ancho: 4,
-  alto: 6
-};
-
-function area(r) {
-  return r.alto * r.ancho;
-}
-
-var areaR = area(rect);
-console.log(areaR);
-
-rect.toString = function () {
-  return this.color ? "Un rect\u00E1gulo " + this.color : "No existe";
-};
-
-console.log(rect.toString());
+var field = new Field(document.querySelector('#email'));
+field = RequiredFieldDecorator(field);
+field = EmailFieldDecorator(field);
 },{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -395,5 +382,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","ejercicios/typescript/index.ts"], null)
-//# sourceMappingURL=/typescript.72c601f0.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","ejercicios/decorator/index.ts"], null)
+//# sourceMappingURL=/decorator.df4bca80.js.map
